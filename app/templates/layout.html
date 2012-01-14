@@ -10,29 +10,27 @@
 <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 <![endif]-->
 <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css" />
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+<link rel="stylesheet" href="{{ url_for('.static', filename='css/style.css') }}" />
 {% endblock %}
 </head>
 <body>
     <div class="topbar">
       <div class="fill">
         <div class="container">
-          <a class="brand" href="{{ url_for('.index') }}">掲示板テスト</a>
+          <a class="brand" href="{{ url_for('index') }}">掲示板テスト</a>
           <ul class="nav">
             {% if not session['user'] %}
-            <li class="active"><a href="{{ url_for('.add_user') }}">ユーザ登録</a></li>
+            <li class="active"><a href="{{ url_for('add_user') }}">ユーザ登録</a></li>
             {% else: %}
-            <li><a href="{{ url_for('.add_entry') }}">コメント追加</a></li>
+            <li><a href="{{ url_for('add_entry') }}">コメント追加</a></li>
             {% endif %}
           </ul>
           {% if not session['user']  %}
-          <form action="{{ url_for('.login') }}" method="POST" class="pull-right">
-            <input class="input-small" type="text" name="username" placeholder="Username">
-            <input class="input-small" type="password"  name="password" placeholder="Password">
+          <form action="{{ url_for('login') }}" method="GET" class="pull-right">
             <button class="btn" type="submit">ログイン</button>
           </form>
           {% else %}
-          <form action="{{ url_for('.logout') }}" method="GET" class="pull-right">
+          <form action="{{ url_for('logout') }}" method="GET" class="pull-right">
             <button class="btn" type="submit">ログアウト</button>
           </form>
           {% endif %}

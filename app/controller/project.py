@@ -1,11 +1,27 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, abort
+from flask import Module,Blueprint, render_template, request, redirect, url_for, flash, session, abort
+from flaskext.oauth import OAuth
 from app.model.entry import EntryModel
 from app.model.user import UserModel
 from app.controller.forms import EntryForm, LoginForm, CreateUserForm
 
-app = Blueprint('board', __name__)
+#app = Blueprint('board', __name__)
+app = Module(__name__)
+
+
+oauth = OAuth()
+twitter = oauth.remote_app('twitter',
+    base_url='https://api.twitter.com/1/',
+    request_token_url='https://api.twitter.com/oauth/request_token',
+    access_token_url='https://api.twitter.com/oauth/access_token',
+    authorize_url='https://api.twitter.com/oauth/authenticate',
+    consumer_key='E7xMzCcx6yoONKkQMXXNQ',
+    consumer_secret='sB8iO1pvFKS6eRegFBkXkP34PCoxiAhXLTB6myzf4M'
+)
+@twitter.tokengetter
+def get_twitter_token():
+    return session.get('twitter_token')
 
 @app.route('/')
 def index():
@@ -48,21 +64,32 @@ def add_entry():
 
     return render_template('add_entry.html', form=form, error=error)
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET'])
 def login():
-    username = request.form['username']
-    password = request.form['password']
-    user = UserModel.get(username=username, password=password)
-    if user:
-        session['user'] = user
-        flash(u"ログイン完了しました")
-    else:
-        flash(u"ログイン失敗しました")
-
-    return redirect(url_for('.index'))
+    return twitter.authorize(callback=url_for('oauth_authorized'))
+    #return twitter.authorize(callback=url_for('oauth_authorized', next=request.args.get('next') or request.referrer or None))
 
 @app.route('/logout')
 def logout():
-    session.pop('user', None)
+ #   session.pop('user', None)
+    session.pop('twitter_token', None)
     flash(u"ログアウトしました")
     return redirect(url_for('.index'))
+
+
+@app.route('/oauth-authorized')
+@twitter.authorized_handler
+def oauth_authorized(resp):
+    next_url = request.args.get('next') or url_for('.index')
+    if resp is None:
+        flash(u"You denied the request sigh in.")
+        return redirect(next_url)
+
+    session['twitter_token'] = (
+        resp['oauth_token'],
+        resp['oauth_token_secret']
+    )
+
+    session['twitter_user'] = resp['screen_name']
+    flash(u"You were sighed in as %s" % resp['screen_name'])
+    return redirect(next_url)

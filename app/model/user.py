@@ -9,9 +9,8 @@ class UserModel(object):
         db_session.commit()
 
     @classmethod
-    def get(self, username, password):
+    def get(self, username=None, password=None):
+        if not username or not password:
+            return False 
         user = db_session.query(UserTable).filter(UserTable.username==username).first()
-        if user.check_password(password):
-            return user
-        else:
-            return False
+        return user if user.check_password(password) else False
