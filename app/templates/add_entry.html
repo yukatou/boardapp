@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block head%}
+{{ super() }}
+<title>追加ページ</title>
+{% endblock %}
+{% block body%}
+<h2>コメント追加</h2>
+
+
+{% from "helper/_helper_form.html" import render_field %}
+<form action="{{ url_for('.add_entry') }}" method="POST">
+    {{ form.csrf }}
+    <fieldset>
+        {{ render_field(form.title) }}
+        {{ render_field(form.text) }}
+        <div class="actions">
+            <input type="submit" class="btn primary" value="投稿"/>
+            <input type="reset" class="btn" value="リセット"/>
+        </div>
+    </fieldset>
+</form>
+{% endblock %}

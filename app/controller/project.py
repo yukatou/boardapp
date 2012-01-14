@@ -1,10 +1,28 @@
-from flask import Module, render_template
+# -*- coding: utf-8 -*-
+
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, abort
 from app.model.entry import EntryModel
+from app.model.user import UserModel
 
-project = Module(__name__)
+app = Blueprint('board', __name__)
 
-@project.route('/')
+@app.route('/')
 def index():
-    entry = EntryModel()
-    return render_template('project.html', entry=entry)
+    entries = EntryModel().get_entries()
+    return render_template('index.html', entries=entries)
 
+@app.route('/user/add', methods=['POST', 'GET'])
+def add_user():
+    return "add"
+
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form['username']
+    password = request.form['password']
+    return redirect(url_for('.index'))
+
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    flash(u"ログアウトしました")
+    return redirect(url_for('.index'))

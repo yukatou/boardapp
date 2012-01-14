@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block head%}
+{{ super() }}
+<title>ユーザ新規登録ページ</title>
+{% endblock %}
+{% block body%}
+<h2>新規登録フォーム</h2>
+
+{% from "helper/_helper_form.html" import render_field  %}
+
+<form action="{{ url_for('.add_user') }}" method="POST">
+    {{ form.csrf }}
+    <fieldset>
+        {{ render_field(form.username) }}
+        {{ render_field(form.password) }}
+        {{ render_field(form.repassword) }}
+        <div class="actions">
+            <input type="submit" class="btn primary" value="登録" />
+            <input type="reset" class="btn" value="リセット"/>
+        </div>
+    </fieldset>
+</form>
+{% endblock %}

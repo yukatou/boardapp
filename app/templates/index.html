@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block head%}
+{{ super() }}
+<title>トップページ</title>
+{% endblock %}
+{% block body%}
+
+{% for entry in entries %}
+    <h2>{{ entry.title }}</h2>
+    <p><span>{{ entry.created_date }}</span> <span>Posted by <strong>{{ entry.user.username }}</strong></span></p>
+    <pre>{{ entry.text }}</pre>
+{% endfor %}
+{% endblock %}
