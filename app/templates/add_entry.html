@@ -8,7 +8,7 @@
 
 
 {% from "helper/_helper_form.html" import render_field %}
-<form action="{{ url_for('.add_entry') }}" method="POST">
+<form action="{{ url_for('add_entry') }}" method="POST">
     {{ form.csrf }}
     <fieldset>
         {{ render_field(form.title) }}

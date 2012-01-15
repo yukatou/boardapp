@@ -14,29 +14,6 @@
 {% endblock %}
 </head>
 <body>
-    <div class="topbar">
-      <div class="fill">
-        <div class="container">
-          <a class="brand" href="{{ url_for('index') }}">掲示板テスト</a>
-          <ul class="nav">
-            {% if not session['user'] %}
-            <li class="active"><a href="{{ url_for('add_user') }}">ユーザ登録</a></li>
-            {% else: %}
-            <li><a href="{{ url_for('add_entry') }}">コメント追加</a></li>
-            {% endif %}
-          </ul>
-          {% if not session['user']  %}
-          <form action="{{ url_for('login') }}" method="GET" class="pull-right">
-            <button class="btn" type="submit">ログイン</button>
-          </form>
-          {% else %}
-          <form action="{{ url_for('logout') }}" method="GET" class="pull-right">
-            <button class="btn" type="submit">ログアウト</button>
-          </form>
-          {% endif %}
-        </div>
-      </div>
-    </div>
     <div class="container">
       <div class="content">
         <div class="page-header">
@@ -56,8 +33,19 @@
             </div>
             {% endif %}
           </div>
-          <div class="span14">
+          <div class="span10">
             {% block body %} {% endblock %}
+          </div>
+          <div class="span3">
+            <h3>メニュー</h3>
+            <ul>
+            {% if not session['screen_name']  %}
+              <li><a href="{{ url_for('login') }}">Twitterログイン</a></li>
+            {% else %}
+              <li><a href="{{ url_for('add_entry') }}">書きこむ</a></li>
+              <li><a href="{{ url_for('logout') }}">logout</a></li>
+            {% endif %}
+            </ul>
           </div>
         </div>
       </div>
